@@ -2,7 +2,8 @@ import './input-moment.min.css';
 import React, { Component } from 'react';
 import moment from 'moment';
 import { BigInputMoment } from 'react-input-moment';
-import './pt-br'
+import './pt-br';
+
 
 export default class Calendario extends Component {
   constructor(props) {
@@ -16,7 +17,7 @@ export default class Calendario extends Component {
       datePickerRangeEndMoment: moment(),
       timePickerMoment: moment(),
       showSeconds: false,
-      locale: moment.locale('fr'),
+      locale: moment.locale('pt-br'),
       size: 'medium'
     };
   }
@@ -25,15 +26,19 @@ export default class Calendario extends Component {
     let { bigInputMoment, showSeconds, locale, size } = this.state;
     let wrapperClass = 'wrapper ' + size;
 
+    //console.log(bigInputMoment.format('llll'));
+
     return (
       <div className="app">
         <div className="header">Agendamento de entrega</div>
         <input
+          name="agenda"
           className="output"
           type="text"
           value={bigInputMoment.format('llll')}
           readOnly
         />
+
         <div className={wrapperClass}>
           <BigInputMoment
             moment={bigInputMoment}
@@ -55,5 +60,3 @@ export default class Calendario extends Component {
     this.setState({ locale: e.target.value });
   }
 }
-
-// ReactDOM.render(<Calendario />, document.getElementById('app'));
