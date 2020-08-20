@@ -4,16 +4,16 @@ import useForm from '../hooks/useForm';
 import * as api from '../api/apiService';
 import Tabela from '../components/tableOrders/tableOrders';
 import { Container, Form } from 'react-bootstrap';
-//import Calendario from '../components/Calendario/index';
+import Calendario from '../components/Calendario/Calendario';
+
 
 export default function CadastroPedidos() {
 
   const valoresIniciais = {
-    checked: false,
-    inteira_meio: '',
-    massa_fina_grossa: '',
-    molhoExtra: '',
-    sabor: '',
+    inteira_meio: "Inteira",
+    massa_fina_grossa: "Fina",
+    molhoExtra: "Sim",
+    sabor: [],
     agenda: '',
     enderecoEntrega: '',
     observacoes: '',
@@ -23,8 +23,6 @@ export default function CadastroPedidos() {
   const { handleChange, values, clearForm } = useForm(valoresIniciais);
 
   const [allOrders, setAllOrders] = useState([]);
-
-  let [checked, setChecked] = useState([]);
 
   useEffect(() => {
     const getAllOrders = async () => {
@@ -36,11 +34,6 @@ export default function CadastroPedidos() {
 
   }, []);
 
-  const onRadioChange = (e) => {
-    checked = true;
-    setChecked(checked);
-  }
-
   return (
     <Container>
       <PageDefault>
@@ -51,98 +44,63 @@ export default function CadastroPedidos() {
             ...allOrders,
             values
           ]);
-          api.getAllOrders({ values });
+          api.submitOrder({ values });
           clearForm()
+          console.log(values);
           console.log(allOrders);
         }} >
 
           {/* Radio Buttons para escolher pizza inteira ou meio-a-meio */}
 
-          {['radio'].map((type) => (
-            <div key={type} className="mb-3">
-              <Form.Check type={type} id={`check-api-${type}`}>
-                <Form.Check.Input type={type} checked={checked}
-                  onChange={onRadioChange} name="inteira_meio" isValid />
-                <Form.Check.Label>{"Inteira"}</Form.Check.Label>
-              </Form.Check>
-
-              <Form.Check type={type} id={`check-api-${type}`}>
-                <Form.Check.Input type={type} checked={checked}
-                  onChange={onRadioChange} name="inteira_meio" isValid />
-                <Form.Check.Label>{"Meio-a-meio"}</Form.Check.Label>
-              </Form.Check>
-              <br />
-
-              {/* Radio Buttons para escolher espessura da massa */}
-
-              <Form.Check type={type} id={`check-api-${type}`}>
-                <Form.Check.Input type={type} checked={checked}
-                  onChange={onRadioChange} name="espessura" isValid />
-                <Form.Check.Label>{"Massa fina"}</Form.Check.Label>
-              </Form.Check>
-
-              <Form.Check type={type} id={`check-api-${type}`}>
-                <Form.Check.Input type={type} checked={checked}
-                  onChange={onRadioChange} name="espessura" isValid />
-                <Form.Check.Label>{"Massa grossa"}</Form.Check.Label>
-              </Form.Check>
-
-              <br />
-
-              {/* Radio Buttons para decidir se quer molho extra */}
-              <Form.Check type={type} id={`check-api-${type}`}>
-                <Form.Check.Input type={type} checked={checked}
-                  onChange={onRadioChange} name="molho" isValid />
-                <Form.Check.Label>{"Sim"}</Form.Check.Label>
-              </Form.Check>
-
-              <Form.Check type={type} id={`check-api-${type}`}>
-                <Form.Check.Input type={type} checked={checked}
-                  onChange={onRadioChange} name="molho" isValid />
-                <Form.Check.Label>{"Não"}</Form.Check.Label>
-              </Form.Check>
-            </div>
-          ))}
-
-          <Form.Group controlId="exampleForm.ControlSelect2">
-            <Form.Label>{"Escolha até 2 sabores para a pizza meio-a-meio"}</Form.Label>
-            <Form.Control as="select" multiple>
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
+          <Form.Group controlId="opcoes1">
+            <Form.Label>{"Pizza de 1 sabor ou meio-a-meio"}</Form.Label>
+            <Form.Control value={values.inteira_meio} as="select" name="inteira_meio" onChange={handleChange}>
+              <option value="Inteira">Inteira</option>
+              <option value="Meio-a-meio">Meio-a-meio</option>
             </Form.Control>
           </Form.Group>
 
-          {/* <Calendario /> */}
+          <Form.Group controlId="opcoes2">
+            <Form.Label>{"Molho extra?"}</Form.Label>
+            <Form.Control value={values.molhoExtra} as="select" name="molhoExtra" onChange={handleChange}>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </Form.Control>
+          </Form.Group>
 
-          <input label="CPF"
-            type="number"
-            name="id"
-            placeholder="CPF"
-            value={values.clientId}
-            onChange={handleChange} />
+          <Form.Group controlId="sabores">
+            <Form.Label>{"Escolha até 2 sabores para a pizza meio-a-meio"}</Form.Label>
+            <Form.Control value={values.sabor} as="select" name="sabor" multiple onChange={handleChange}>
+              <option value="Muzzarela">Muzzarela</option>
+              <option value="Margerita">Margerita</option>
+              <option value="4 Queijos">4 Queijos</option>
+              <option value="Berinjela">Berinjela</option>
+              <option value="Brigadeiro">Brigadeiro</option>
+              <option value="Beijinho">Beijinho</option>
+            </Form.Control>
+          </Form.Group>
 
-          <input label="E-mail"
-            type="text"
-            name="email"
-            placeholder="E-mail"
-            value={values.email}
-            onChange={handleChange} />
-
-          <input label="Endereço"
-            type="text"
-            name="endereco"
-            placeholder="Endereço residencial"
-            value={values.endereco}
-            onChange={handleChange} />
+          <Calendario agendamento={values.agenda} />
 
           <input label="Endereço de Entrega"
             type="text"
             name="enderecoEntrega"
             placeholder="Endereço de Entrega"
             value={values.enderecoEntrega}
+            onChange={handleChange} />
+
+
+          <Form.Group controlId="observacoes">
+            <Form.Label>Observações do Pedido</Form.Label>
+            <Form.Control as="textarea" rows="3" name="observacoes" value={values.observacoes}
+              onChange={handleChange} />
+          </Form.Group>
+
+          <input label="CPF"
+            type="number"
+            name="clientId"
+            placeholder="CPF"
+            value={values.clientId}
             onChange={handleChange} />
 
           <input type="submit" value="Cadastrar" />
