@@ -13,6 +13,7 @@ export default function TabelaPedidos({ allOrders }) {
           <th>massaFina-Grossa</th>
           <th>molhoExtra</th>
           <th>sabor</th>
+          <th>Endereço de Entrega</th>
           <th>observacoes</th>
           <th>cpf</th>
         </tr>
@@ -20,14 +21,15 @@ export default function TabelaPedidos({ allOrders }) {
       <tbody>
         {allOrders.map((order, index) => {
           return (
-            <tr key={order.id}>
+            <tr key={index}>
               <th scope="row">{order.id}</th>
               <td>{order.inteira_meio}</td>
               <td>{order.massa_fina_grossa}</td>
               <td>{order.molhoExtra}</td>
               <td>{order.sabor}</td>
+              <td>{order.enderecoEntrega}</td>
               <td>{order.observacoes}</td>
-              <td>{order.cpf}</td>
+              <td>{order.clientId}</td>
             </tr>
           );
         })
